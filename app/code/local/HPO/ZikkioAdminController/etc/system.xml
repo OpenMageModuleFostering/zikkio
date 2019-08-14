@@ -1,0 +1,27 @@
+<config>
+    <sections>
+        <catalog>
+            <groups>
+                <zikkio translate="label">
+                    <label>Zikkio</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>50</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <zikkio_api translate="label">
+                            <label>Please enter here your Zikkio API KEY</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Insert here the API KEY</comment>
+                        </zikkio_api>
+                    </fields>
+                </zikkio>
+            </groups>
+        </catalog>
+    </sections>
+</config> 

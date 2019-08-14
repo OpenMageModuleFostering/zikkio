@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <HPO_ZikkioAdminController>
+            <version>1.0.0</version>
+            <depends>
+            <!-- no dependencies -->
+            </depends>
+        </HPO_ZikkioAdminController>
+    </modules>
+    <global>        
+        <events>
+            <admin_system_config_section_save_after>
+                <observers>
+                    <HPO_ZikkioAdminController_save_api_zikkio>
+                        <type>singleton</type>
+                        <class>HPO_ZikkioAdminController_Model_Observer</class>
+                        <method>saveApiKey</method>
+                    </HPO_ZikkioAdminController_save_api_zikkio>
+                </observers>
+            </admin_system_config_section_save_after>
+        </events>
+        <models>
+            <ZikkioAdminController>
+                <class>HPO_ZikkioAdminController_Model</class>
+            </ZikkioAdminController>
+        </models>
+        <resources />
+        <extraconfig />
+        <blocks />
+    </global>
+</config> 

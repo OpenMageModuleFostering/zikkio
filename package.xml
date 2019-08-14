@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+    <name>Zikkio</name>
+    <version>1.0.0</version>
+    <stability>stable</stability>
+    <license>Open Software License (OSL)</license>
+    <channel>community</channel>
+    <extends/>
+    <summary>Zikkio module is the connector between your Magento and Zikkio service.</summary>
+    <description>Zikkio module is the connector between your Magento and Zikkio service. With Zikkio module active you can import/export orders and products to Zikkio.</description>
+    <notes>First stable release.</notes>
+    <authors><author><name>Paolo Morello</name><user>Zikkio</user><email>account@zikkio.com</email></author></authors>
+    <date>2016-03-31</date>
+    <time>08:55:58</time>
+    <contents><target name="magelocal"><dir><dir name="HPO"><dir name="ZikkioAdminController"><dir name="Model"><file name="Observer.php" hash="ee1c1193342460e490b70e7b74c57b56"/></dir><dir name="controllers"><dir name="Adminhtml"><file name="CustomController.php" hash="394222c6ca973beb16af93e18822f559"/></dir></dir><dir name="etc"><file name="config.xml" hash="8a092726d039eda632d0797679b9c92e"/><file name="system.xml" hash="256c0d51bb6fb236fbf9b314d0be6389"/></dir></dir></dir></dir></target><target name="mageweb"><dir name="bridge2cart"><file name="bridge.php" hash="7bbfb93ce76daf59f1214c9ebdf5dac8"/><file name="index.html" hash="d41d8cd98f00b204e9800998ecf8427e"/></dir></target></contents>
+    <compatible/>
+    <dependencies><required><php><min>5.1.0</min><max>6.0.0</max></php></required></dependencies>
+</package>

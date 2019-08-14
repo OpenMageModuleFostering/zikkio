@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/Zikkio",
+    "type": "magento-module",
+    "license": "Open-Software-License-(OSL)",
+    "homepage": "",
+    "description": "Zikkio module is the connector between your Magento and Zikkio service.",
+    "authors": [
+    {
+        "name": "Paolo Morello",
+        "email": "account@zikkio.com"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}

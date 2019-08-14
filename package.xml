@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <package>
     <name>Zikkio</name>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <stability>stable</stability>
     <license>Open Software License (OSL)</license>
     <channel>community</channel>
     <extends/>
     <summary>Import millions of products with a click and start trading with the power of drop-shipping.</summary>
     <description>Zikkio module is the connector between your Magento and Zikkio service. With Zikkio module active you can import/export orders and products to Zikkio.</description>
-    <notes>Folder and files permission fixed.</notes>
+    <notes>Sql cleaning process added.</notes>
     <authors><author><name>Zikkio</name><user>Zikkio</user><email>account@zikkio.com</email></author></authors>
-    <date>2016-10-27</date>
-    <time>19:56:17</time>
-    <contents><target name="magecommunity"><dir name="Zikkio"><dir name="Zikkio"><dir name="Helper"><file name="Data.php" hash="c0ed36a46c1298365d1ad17e548b5aaf"/></dir><dir name="Model"><file name="Data.php" hash="d98c6fb54881cca19d8a6d46beb39781"/><file name="Observer.php" hash="b65ccb303f668899b3985088c5c3fdbc"/><file name="Options.php" hash="5da5644b3f2707fee327d333fc6c6326"/><dir name="Resource"><file name="Setup.php" hash="2708a24475b41a0721cb396c5bff43bc"/></dir></dir><dir name="etc"><file name="config.xml" hash="e55d0aebbf8b91dfcb9c0fd90d7220a7"/><file name="system.xml" hash="86bc7ee1d4ba4b7053bdaf941274791f"/></dir><dir name="sql"><dir name="zikkio_setup"><file name="mysql4-install-1-0-8.php" hash="e383c4192893bb9e7b1031f93eefbb92"/></dir></dir></dir><file name=".DS_Store" hash="441893c547df16b526351b4785698924"/></dir></target><target name="mageetc"><dir name="modules"><file name="Zikkio_Zikkio.xml" hash="19ddad4db1d8e52f39f58148d5c61372"/></dir></target><target name="mage"><dir name="bridge2cart"><file name="bridge.php" hash="79a7d5c86cdab1e59f9bdc2e0e7c2c8a"/><file name="config.php" hash="e7d47925538152d91fb207daa9d4f57f"/></dir></target></contents>
+    <date>2016-10-28</date>
+    <time>16:41:10</time>
+    <contents><target name="magecommunity"><dir name="Zikkio"><dir name="Zikkio"><dir name="Helper"><file name="Data.php" hash="c0ed36a46c1298365d1ad17e548b5aaf"/></dir><dir name="Model"><file name="Data.php" hash="d98c6fb54881cca19d8a6d46beb39781"/><file name="Observer.php" hash="acb0c849ffe77bb9aef12f6b45c1d027"/><file name="Options.php" hash="5da5644b3f2707fee327d333fc6c6326"/><dir name="Resource"><file name="Setup.php" hash="2708a24475b41a0721cb396c5bff43bc"/></dir></dir><dir name="etc"><file name="config.xml" hash="d8f70bf0c240f6e2a20425453bab4172"/><file name="system.xml" hash="86bc7ee1d4ba4b7053bdaf941274791f"/></dir><dir name="sql"><dir name="zikkio_setup"><file name="mysql4-install-1-0-5.php" hash="ad446f4cf7fda786b6510d6d999e3efc"/><file name="mysql4-install-1-0-9.php" hash="ad446f4cf7fda786b6510d6d999e3efc"/><file name=".DS_Store" hash="194577a7e20bdcc7afbb718f502c134c"/></dir></dir></dir></dir></target><target name="mageetc"><dir name="modules"><file name="Zikkio_Zikkio.xml" hash="19ddad4db1d8e52f39f58148d5c61372"/></dir></target><target name="mage"><dir name="bridge2cart"><file name="bridge.php" hash="84b71a49ce41efa85a2872f824c6b171"/></dir></target></contents>
     <compatible/>
     <dependencies><required><php><min>5.1.0</min><max>6.0.0</max></php></required></dependencies>
 </package>

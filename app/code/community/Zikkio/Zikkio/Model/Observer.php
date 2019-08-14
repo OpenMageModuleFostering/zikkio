@@ -34,7 +34,7 @@ class Zikkio_Zikkio_Model_Observer {
 
         $zikkio_api_key = Mage::getStoreConfig('zikkio_settings/zikkio_api', Mage::app()->getStore());
 		
-        Mage::log('Zikkio_Zikkio_Model_Observer@saveApiKey()-> '.$zikkio_api_key['zikkio_api'], null, 'HPO.log');
+        Mage::log('Zikkio_Zikkio_Model_Observer@saveApiKey()-> '.$zikkio_api_key['zikkio_api'], null, 'zikkio.log');
 
         $root_magento = Mage::getBaseDir();
         $zikkio_bridge_directory = $root_magento . "/bridge2cart";
@@ -43,12 +43,12 @@ class Zikkio_Zikkio_Model_Observer {
 
         $content_file = '<?php define("M1_TOKEN", "' . $zikkio_api_key['zikkio_api'] . '");';
 		
-		chmod($file, 0777);
-		chmod($zikkio_bridge_directory, 0777);
+        chmod($file, 0777);
+        chmod($zikkio_bridge_directory, 0777);
 
         file_put_contents($file, $content_file);
 		
-		if (chmod($file, 0777)) {
+        if (chmod($file, 0777)) {
             chmod($file, 0644);
         }
 

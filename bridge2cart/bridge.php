@@ -2,7 +2,7 @@
 /*-----------------------------------------------------------------------------+
 | MagneticOne                                                                  |
 | Copyright (c) 2012 MagneticOne.com <contact@magneticone.com>                 |
-| All rights reserved                                                           |
+| All rights reserved                                                          |
 +------------------------------------------------------------------------------+
 | PLEASE READ  THE FULL TEXT OF SOFTWARE LICENSE AGREEMENT IN THE "license.txt"|
 | FILE PROVIDED WITH THIS DISTRIBUTION. THE AGREEMENT TEXT IS ALSO AVAILABLE   |

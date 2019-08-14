@@ -1,29 +1,29 @@
 <?xml version="1.0"?>
 <config>
     <modules>
-        <Zikkio_ZikkioAdminController>
-            <version>1.0.0</version>
+        <Zikkio_Zikkio>
+            <version>1.0.3</version>
             <depends>
             <!-- no dependencies -->
             </depends>
-        </Zikkio_ZikkioAdminController>
+        </Zikkio_Zikkio>
     </modules>
     <global>        
         <events>
             <admin_system_config_section_save_after>
                 <observers>
-                    <Zikkio_ZikkioAdminController_save_api_zikkio>
+                    <Zikkio_Zikkio_save_api_zikkio>
                         <type>singleton</type>
-                        <class>Zikkio_ZikkioAdminController_Model_Observer</class>
+                        <class>Zikkio_Zikkio_Model_Observer</class>
                         <method>saveApiKey</method>
-                    </Zikkio_ZikkioAdminController_save_api_zikkio>
+                    </Zikkio_Zikkio_save_api_zikkio>
                 </observers>
             </admin_system_config_section_save_after>
         </events>
         <models>
-            <ZikkioAdminController>
-                <class>Zikkio_ZikkioAdminController_Model</class>
-            </ZikkioAdminController>
+            <Zikkio>
+                <class>Zikkio_Zikkio_Model</class>
+            </Zikkio>
         </models>
         <resources />
         <extraconfig />

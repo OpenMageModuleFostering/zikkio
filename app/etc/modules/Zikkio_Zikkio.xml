@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <config>
     <modules>
-        <Zikkio_ZikkioAdminController>
+        <Zikkio_Zikkio>
             <active>true</active>
             <codePool>community</codePool>
-        </Zikkio_ZikkioAdminController>
+        </Zikkio_Zikkio>
     </modules>
 </config>

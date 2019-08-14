@@ -42,9 +42,7 @@
 
 class M1_Bridge_Action_Getconfig
 {
-
-  function parseMemoryLimit($val)
-  {
+  function parseMemoryLimit($val) {
     $last = strtolower($val[strlen($val)-1]);
     switch($last) {
       case 'g':
@@ -58,51 +56,49 @@ class M1_Bridge_Action_Getconfig
     return $val;
   }
 
-  function getMemoryLimit()
-  {
+  function getMemoryLimit() {
     $memoryLimit = trim(@ini_get('memory_limit'));
-    if (strlen($memoryLimit) === 0) {
+    if( strlen($memoryLimit) === 0 ) {
       $memoryLimit = "0";
     }
     $memoryLimit = $this->parseMemoryLimit($memoryLimit);
 
     $maxPostSize = trim(@ini_get('post_max_size'));
-    if (strlen($maxPostSize) === 0) {
+    if( strlen($maxPostSize) === 0 ) {
       $maxPostSize = "0";
     }
     $maxPostSize = $this->parseMemoryLimit($maxPostSize);
 
     $suhosinMaxPostSize = trim(@ini_get('suhosin.post.max_value_length'));
-    if (strlen($suhosinMaxPostSize) === 0) {
+    if( strlen($suhosinMaxPostSize) === 0 ) {
       $suhosinMaxPostSize = "0";
     }
     $suhosinMaxPostSize = $this->parseMemoryLimit($suhosinMaxPostSize);
 
-    if ($suhosinMaxPostSize == 0) {
+    if ( $suhosinMaxPostSize == 0 ) {
       $suhosinMaxPostSize = $maxPostSize;
     }
 
-    if ($maxPostSize == 0) {
+    if ( $maxPostSize == 0 ){
       $suhosinMaxPostSize = $maxPostSize = $memoryLimit;
     }
 
-    return min($suhosinMaxPostSize, $maxPostSize, $memoryLimit);
+    return min ( $suhosinMaxPostSize, $maxPostSize, $memoryLimit );
   }
-
+  
   function isZlibSupported()
   {
     return function_exists('gzdecode');
   }
 
-  function perform($bridge)
-  {
-    if (!defined("DEFAULT_LANGUAGE_ISO2")) {
-      define("DEFAULT_LANGUAGE_ISO2", ""); //variable for Interspire cart
+  function perform($bridge) {
+    if(!defined("DEFAULT_LANGUAGE_ISO2")) {
+      define("DEFAULT_LANGUAGE_ISO2",""); //variable for Interspire cart
     }
 
     $result = array(
       "images" => array(
-        "imagesPath"                => $bridge->config->imagesDir, // path to images folder - relative to store root
+        "imagesPath"                => $bridge->config->imagesDir,          // path to images folder - relative to store root
         "categoriesImagesPath"      => $bridge->config->categoriesImagesDir,
         "categoriesImagesPaths"     => $bridge->config->categoriesImagesDirs,
         "productsImagesPath"        => $bridge->config->productsImagesDir,
@@ -134,7 +130,7 @@ class M1_Bridge_Action_Cubecart
     $languages = array();
 
     while ($dirEntry = readdir($dirHandle)) {
-      if (!is_dir(M1_STORE_BASE_DIR . 'language/' . $dirEntry) || $dirEntry == '.' || $dirEntry == '..' || strpos($dirEntry, "_") !== false) {
+      if (!is_dir(M1_STORE_BASE_DIR . 'language/' . $dirEntry) || $dirEntry == '.' || $dirEntry == '..' || strpos($dirEntry, "_") !== false ) {
         continue;
       }
 
@@ -147,14 +143,14 @@ class M1_Bridge_Action_Cubecart
         $cnfile = "config.php";
       }
 
-      if (!file_exists( M1_STORE_BASE_DIR . 'language/' . $dirEntry . '/'. $cnfile)) {
+      if( !file_exists( M1_STORE_BASE_DIR . 'language/' . $dirEntry . '/'. $cnfile ) ) {
         continue;
       }
 
       $str = file_get_contents(M1_STORE_BASE_DIR . 'language/' . $dirEntry . '/'.$cnfile);
       preg_match("/".preg_quote('$langName')."[\s]*=[\s]*[\"\'](.*)[\"\'];/", $str, $match);
 
-      if (isset($match[1])) {
+      if( isset($match[1]) ) {
         $lang['name'] = $match[1];
         $languages[] = $lang;
       }
@@ -222,43 +218,42 @@ class M1_Bridge_Action_Clearcache
    * @var $fileExclude - name file in format pregmatch
    */
 
-  function _removeGarbage($dirs = array(), $fileExclude = '')
+  function _removeGarbage( $dirs = array(), $fileExclude = '' )
   {
     $result = true;
 
-    foreach ($dirs as $dir) {
+    foreach($dirs as $dir) {
 
-      if (!file_exists($dir)) {
+      if( !file_exists( $dir ) ){
         continue;
       }
 
       $dirHandle = opendir($dir);
 
       while (false !== ($file = readdir($dirHandle))) {
-        if ($file == "." || $file == "..") {
+        if ( $file == "." || $file == ".." ) {
           continue;
         }
 
-        if ((trim($fileExclude) != '') && preg_match("/^" .$fileExclude . "?$/", $file)) {
+        if( (trim($fileExclude) != '') && preg_match("/^" .$fileExclude . "?$/",$file) ) {
           continue;
         }
 
-        if (is_dir($dir . $file)) {
+        if( is_dir( $dir . $file ) ) {
           continue;
         }
 
         if (!unlink($dir . $file)) {
-          $result = false;
+          $result=false;
         }
       }
-
       closedir($dirHandle);
     }
 
     if ($result) {
-      echo 'OK';
+      print "OK";
     } else {
-      echo 'ERROR';
+      print "ERROR";
     }
 
     return $result;
@@ -285,19 +280,19 @@ class M1_Bridge_Action_Clearcache
       foreach ($indexes as $index) {
         exec($phpExecutable . " shell/indexer.php --reindex $index", $out);
       }
-      echo 'OK';
+      print "OK";
     } else {
       echo 'Error: can not find PHP executable file.';
     }
 
-    echo 'OK';
+    print "OK";
   }
-
+  
   function _InterspireClearCache()
   {
     $res = true;
     $file = M1_STORE_BASE_DIR . 'cache' . DIRECTORY_SEPARATOR . 'datastore' . DIRECTORY_SEPARATOR . 'RootCategories.php';
-    if (file_exists($file)) {
+    if( file_exists( $file ) ) {
       if (!unlink($file)) {
         $res = false;
       }
@@ -312,16 +307,14 @@ class M1_Bridge_Action_Clearcache
   function _CubecartClearCache()
   {
     $ok = true;
-
-    if (file_exists(M1_STORE_BASE_DIR . 'cache')) {
+    
+    if( file_exists(M1_STORE_BASE_DIR . 'cache') ) {
       $dirHandle = opendir(M1_STORE_BASE_DIR . 'cache/');
 
       while (false !== ($file = readdir($dirHandle))) {
-        if ($file != "." && $file != ".." && !preg_match("/^index\.html?$/", $file) && !preg_match("/^\.htaccess?$/", $file)) {
-          if (is_file( M1_STORE_BASE_DIR . 'cache/' . $file)) {
-            if (!unlink(M1_STORE_BASE_DIR . 'cache/' . $file)) {
-              $ok = false;
-            }
+        if ($file != "." && $file != ".." && !preg_match("/^index\.html?$/",$file) && !preg_match("/^\.htaccess?$/",$file) ) {
+          if( is_file( M1_STORE_BASE_DIR . 'cache/' . $file ) ) {
+            if (!unlink(M1_STORE_BASE_DIR . 'cache/' . $file)) $ok=false;
           }
         }
       }
@@ -333,11 +326,8 @@ class M1_Bridge_Action_Clearcache
       unlink(M1_STORE_BASE_DIR.'includes/extra/admin_cat_cache.txt');
     }
 
-    if ($ok) {
-      echo 'OK';
-    } else {
-      echo 'ERROR';
-    }
+    if ($ok) print "OK";
+    else print "ERROR";
   }
 
   function _PrestashopClearCache()
@@ -398,9 +388,9 @@ class M1_Bridge_Action_Clearcache
   {
     $pathToImages = 'components/com_virtuemart/shop_image';
 
-    $dirParts = explode("/", $pathToImages);
+    $dir_parts = explode("/", $pathToImages);
     $path = M1_STORE_BASE_DIR;
-    foreach ($dirParts as $item) {
+    foreach ($dir_parts as $item) {
       if ($item == '') {
         continue;
       }
@@ -445,18 +435,21 @@ class M1_Bridge_Action_Clearcache
 
     $this->_removeGarbage($dirs, '\.htaccess');
   }
-
+  
   function _CscartClearCache()
   {
+    $res = true;
+
     $dir = M1_STORE_BASE_DIR . 'var/cache/';
     $res = $this->removeDirRec($dir);
 
-    if ($res) {
-      echo 'OK';
+    if($res){
+      print "OK\n";
     } else {
-      echo 'ERROR';
+      print "ERROR!!!\n";
     }
   }
+
 
   function _Prestashop15ClearCache()
   {
@@ -472,25 +465,23 @@ class M1_Bridge_Action_Clearcache
   function removeDirRec($dir)
   {
     $result = true;
-
     if ($objs = glob($dir."/*")) {
-      foreach ($objs as $obj) {
-        if (is_dir($obj)) {
+      foreach($objs as $obj) {
+        if(is_dir($obj)){
           //print "IS DIR! START RECURSIVE FUNCTION.\n";
           $this->removeDirRec($obj);
         } else {
-          if (!unlink($obj)) {
+          if(!unlink($obj)){
             //print "!UNLINK FILE: ".$obj."\n";
             $result = false;
           }
         }
       }
     }
-    if (!rmdir($dir)) {
+    if(!rmdir($dir)){
       //print "ERROR REMOVE DIR: ".$dir."\n";
       $result = false;
     }
-
     return $result;
   }
 }
@@ -510,15 +501,8 @@ class M1_Bridge_Action_Batchsavefile extends M1_Bridge_Action_Savefile
 {
   function perform($bridge) {
     $result = array();
-
     foreach ($_POST['files'] as $fileInfo) {
-      $result[$fileInfo['id']] = $this->_saveFile(
-        $fileInfo['source'],
-        $fileInfo['target'],
-        (int)$fileInfo['width'],
-        (int)$fileInfo['height'],
-        $fileInfo['local_source']
-      );
+      $result[$fileInfo['id']] = $this->_saveFile($fileInfo['source'], $fileInfo['target'], (int)$fileInfo['width'], (int)$fileInfo['height'], $fileInfo['local_source']);
     }
 
     echo serialize($result);
@@ -807,41 +791,41 @@ class M1_Bridge_Action_Savefile
 
   function _saveFile($source, $destination, $width, $height, $local = '')
   {
-    if (trim($local) != '') {
+    if ( trim($local) != '' ) {
 
-      if ($this->_copyLocal($local, $destination, $width, $height)) {
+      if( $this->_copyLocal($local, $destination, $width, $height) ) {
         return "OK";
       }
 
     }
 
-    if (!preg_match('/^https?:\/\//i', $source)) {
+    if( !preg_match('/^https?:\/\//i', $source) ) {
       $result = $this->_createFile($source, $destination);
-    } elseif ($this->_isSameHost($source)) {
+    } elseif( $this->_isSameHost($source) ) {
       $result = $this->_saveFileLocal($source, $destination);
     } else {
       $result = $this->_saveFileCurl($source, $destination);
     }
 
-    if ($result != "OK") {
+    if ( $result != "OK" ) {
       return $result;
     }
 
     $destination = M1_STORE_BASE_DIR . $destination;
 
-    if ($width != 0 && $height != 0) {
+    if( $width != 0 && $height != 0 ) {
       $this->_scaled2( $destination, $width, $height );
     }
-
-    if ($this->cartType == "Prestashop11") {
+    
+    if ( $this->cartType == "Prestashop11" ) {
       // convert destination.gif(png) to destination.jpg
       $imageGd = $this->_loadImage($destination);
 
-      if ($imageGd === false) {
+      if( $imageGd === false ) {
         return $result;
       }
 
-      if (!$this->_convert($imageGd, $destination, IMAGETYPE_JPEG, 'jpg')) {
+      if( !$this->_convert($imageGd, $destination, IMAGETYPE_JPEG, 'jpg') ){
         return "CONVERT FAILED";
       }
     }
@@ -858,69 +842,69 @@ class M1_Bridge_Action_Savefile
       return false;
     }
 
-    if ($width != 0 && $height != 0) {
-      $this->_scaled2($destination, $width, $height);
+    if( $width != 0 && $height != 0 ) {
+      $this->_scaled2( $destination, $width, $height );
     }
 
     return true;
   }
 
-  function _loadImage($filename, $skipJpg = true)
+  function _loadImage( $filename, $skipJpg = true )
   {
-    $imageInfo = @getimagesize($filename);
-    if ($imageInfo === false) {
+    $image_info = @getimagesize($filename);
+    if( $image_info === false ) {
       return false;
     }
 
-    $this->_imageType = $imageInfo[2];
+    $this->_imageType = $image_info[2];
 
-    switch ($this->_imageType) {
-      case IMAGETYPE_JPEG:
+    switch ( $this->_imageType ) {
+      case IMAGETYPE_JPEG :
         $image = imagecreatefromjpeg($filename);
         break;
-      case IMAGETYPE_GIF:
+      case IMAGETYPE_GIF  :
         $image = imagecreatefromgif($filename);
         break;
-      case IMAGETYPE_PNG:
+      case IMAGETYPE_PNG  :
         $image = imagecreatefrompng($filename);
         break;
       default:
         return false;
     }
 
-    if ($skipJpg && ($this->_imageType == IMAGETYPE_JPEG)) {
+    if( $skipJpg && ($this->_imageType == IMAGETYPE_JPEG) ) {
       return false;
     }
 
     return $image;
   }
 
-  function _saveImage($image, $filename, $imageType = IMAGETYPE_JPEG, $compression = 85, $permissions = null)
-  {
+  function _saveImage( $image, $filename, $image_type=IMAGETYPE_JPEG, $compression=85, $permissions=null )
+  {    
     $result = true;
-    if ($imageType == IMAGETYPE_JPEG) {
-      $result = imagejpeg($image, $filename, $compression);
-    } elseif ($imageType == IMAGETYPE_GIF) {
-      $result = imagegif($image, $filename);
-    } elseif ($imageType == IMAGETYPE_PNG) {
-      $result = imagepng($image, $filename);
+    if( $image_type == IMAGETYPE_JPEG ) {
+      $result = imagejpeg($image,$filename,$compression);
+    } elseif( $image_type == IMAGETYPE_GIF ) {
+      $result = imagegif($image,$filename);
+    } elseif( $image_type == IMAGETYPE_PNG ) {
+      $result = imagepng($image,$filename);
     }
 
-    if ($permissions != null) {
-      chmod($filename, $permissions);
+    if( $permissions != null) {
+      chmod($filename,$permissions);
     }
 
-    imagedestroy($image);
+    imagedestroy( $image );
 
     return $result;
   }
 
   function _createFile($source, $destination)
   {
-    if ($this->_create_dir(dirname($destination)) !== false) {
+    if( $this->_create_dir(dirname($destination)) !== false ) {
       $destination = M1_STORE_BASE_DIR . $destination;
       $body = base64_decode($source);
-      if ($body === false || file_put_contents($destination, $body) === false) {
+      if( $body === false || file_put_contents($destination, $body) === false ) {
         return '[BRIDGE ERROR] File save failed!';
       }
 
@@ -935,10 +919,10 @@ class M1_Bridge_Action_Savefile
     $srcInfo = parse_url($source);
     $src = rtrim($_SERVER['DOCUMENT_ROOT'], "/") . $srcInfo['path'];
 
-    if ($this->_create_dir(dirname($destination)) !== false) {
+    if( $this->_create_dir(dirname($destination)) !== false ) {
       $dst = M1_STORE_BASE_DIR . $destination;
 
-      if (!@copy($src, $dst)) {
+      if ( !@copy($src, $dst) ) {
         return $this->_saveFileCurl($source, $destination);
       }
 
@@ -952,7 +936,7 @@ class M1_Bridge_Action_Savefile
   function _saveFileCurl($source, $destination)
   {
     $source = $this->_escapeSource($source);
-    if ($this->_create_dir(dirname($destination)) !== false) {
+    if( $this->_create_dir(dirname($destination)) !== false ) {
       $destination = M1_STORE_BASE_DIR . $destination;
 
       $ch = curl_init();
@@ -964,25 +948,25 @@ class M1_Bridge_Action_Savefile
       curl_exec($ch);
       $httpResponseCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-      if ($httpResponseCode != 200) {
+      if($httpResponseCode != 200) {
          curl_close($ch);
         return "[BRIDGE ERROR] Bad response received from source, HTTP code $httpResponseCode!";
       }
 
       $dst = @fopen($destination, "wb");
-      if ($dst === false) {
+      if( $dst === false ) {
         return "[BRIDGE ERROR] Can't create  $destination!";
       }
       curl_setopt($ch, CURLOPT_NOBODY, false);
       curl_setopt($ch, CURLOPT_FILE, $dst);
       curl_setopt($ch, CURLOPT_HTTPGET, true);
       curl_exec($ch);
-      if (($error_no = curl_errno($ch)) != CURLE_OK) {
+      if( ($error_no = curl_errno($ch)) != CURLE_OK ) {
         return "[BRIDGE ERROR] $error_no: " . curl_error($ch);
       }
       curl_close($ch);
       @chmod($destination, 0777);
-
+      
       return "OK";
 
     } else {
@@ -996,16 +980,16 @@ class M1_Bridge_Action_Savefile
   }
 
   function _create_dir($dir) {
-    $dirParts = explode("/", $dir);
+    $dir_parts = explode("/", $dir);
     $path = M1_STORE_BASE_DIR;
-    foreach ($dirParts as $item) {
+    foreach ($dir_parts as $item) {
       if ($item == '') {
         continue;
       }
       $path .= $item . DIRECTORY_SEPARATOR;
-      if (!is_dir($path)) {
+      if(!is_dir($path)) {
         $res = @mkdir($path);
-        if (!$res) {
+        if(!$res) {
           return false;
         }
       }
@@ -1018,12 +1002,12 @@ class M1_Bridge_Action_Savefile
   {
     $srcInfo = parse_url($source);
 
-    if (preg_match('/\.php$/', $srcInfo['path'])) {
+    if ( preg_match('/\.php$/', $srcInfo['path'] ) ) {
       return false;
     }
 
     $hostInfo = parse_url("http://" . $_SERVER['HTTP_HOST']);
-    if (@$srcInfo['host'] == $hostInfo['host']) {
+    if( @$srcInfo['host'] == $hostInfo['host'] ) {
       return true;
     }
 
@@ -1038,15 +1022,15 @@ class M1_Bridge_Action_Savefile
    *
    * @return true if success or false if no
    */
-  function _convert($image, $filename, $type = IMAGETYPE_JPEG, $extension = '')
+  function _convert( $image, $filename, $type = IMAGETYPE_JPEG, $extension = '' )
   {
     $end = pathinfo($filename, PATHINFO_EXTENSION);
 
-    if ($extension == '') {
+    if( $extension == '' ) {
       $extension = image_type_to_extension($type, false);
     }
 
-    if ($end == $extension) {
+    if( $end == $extension ) {
       return true;
     }
 
@@ -1068,33 +1052,33 @@ class M1_Bridge_Action_Savefile
     return $this->_saveImage($newImage, $pathSave, $type);
   }
 
-  function _scaled($destination, $width, $height)
+  function _scaled( $destination, $width, $height )
   {
     $image = $this->_loadImage($destination, false);
 
-    if ($image === false) {
+    if( $image === false ) {
       return;
     }
 
     $originWidth  = imagesx( $image );
     $originHeight = imagesy( $image );
-
+    
     $rw = (int)$height * (int)$originWidth / (int)$originHeight;
     $useHeight = ($rw <= $width);
 
-    if ($useHeight) {
+    if ( $useHeight ) {
       $width = (int)$rw;
     } else {
       $height = (int)((int)($width) * (int)($originHeight) / (int)($originWidth));
     }
 
-    $newImage = imagecreatetruecolor($width, $height);
-    $white = imagecolorallocate($newImage, 255, 255, 255);
-    imagefill($newImage, 0, 0, $white);
-    imagecopyresampled($newImage, $image, 0, 0, 0, 0, $width, $height, $originWidth, $originHeight);
-    imagecolortransparent($newImage, $white);
-
-    return $this->_saveImage($newImage, $destination, $this->_imageType, 100) ? "OK" : "CAN'T SCALE IMAGE";
+    $new_image = imagecreatetruecolor($width, $height);
+    $white = imagecolorallocate($new_image, 255, 255, 255);
+    imagefill($new_image, 0, 0, $white);
+    imagecopyresampled($new_image, $image, 0, 0, 0, 0, $width, $height, $originWidth, $originHeight);
+    imagecolortransparent($new_image, $white);
+    
+    return $this->_saveImage($new_image, $destination, $this->_imageType, 100)? "OK" : "CAN'T SCALE IMAGE";
   }
 
   //scaled2 method optimizet for prestashop
@@ -1104,24 +1088,25 @@ class M1_Bridge_Action_Savefile
 
     $sourceImage = $this->_loadImage($destination, false);
 
-    if ($sourceImage === false) {
+    if( $sourceImage === false ) {
       return "IMAGE NOT SUPPORTED";
     }
 
-    $sourceWidth  = imagesx($sourceImage);
-    $sourceHeight = imagesy($sourceImage);
+    $sourceWidth  = imagesx( $sourceImage );
+    $sourceHeight = imagesy( $sourceImage );
 
     $widthDiff = $destWidth / $sourceWidth;
     $heightDiff = $destHeight / $sourceHeight;
 
-    if ($widthDiff > 1 && $heightDiff > 1) {
+    if ( $widthDiff > 1 && $heightDiff > 1 )
+    {
       $nextWidth = $sourceWidth;
       $nextHeight = $sourceHeight;
     } else {
       if (intval($method) == 2 || (intval($method) == 0 AND $widthDiff > $heightDiff)) {
         $nextHeight = $destHeight;
         $nextWidth = intval(($sourceWidth * $nextHeight) / $sourceHeight);
-        $destWidth = ((intval($method) == 0 ) ? $destWidth : $nextWidth);
+        $destWidth = ((intval($method) == 0 )? $destWidth : $nextWidth);
       } else {
         $nextWidth = $destWidth;
         $nextHeight = intval($sourceHeight * $destWidth / $sourceWidth);
@@ -1139,8 +1124,8 @@ class M1_Bridge_Action_Savefile
 
     imagecopyresampled($destImage, $sourceImage, $borderWidth, $borderHeight, 0, 0, $nextWidth, $nextHeight, $sourceWidth, $sourceHeight);
     imagecolortransparent($destImage, $white);
-
-    return $this->_saveImage($destImage, $destination, $this->_imageType, 100) ? "OK" : "CAN'T SCALE IMAGE";
+    
+    return $this->_saveImage($destImage, $destination, $this->_imageType, 100)? "OK" : "CAN'T SCALE IMAGE";
   }
 }
 
@@ -1148,20 +1133,22 @@ class M1_Bridge_Action_Query
 {
   function perform($bridge)
   {
-    if (isset($_POST['query']) && isset($_POST['fetchMode'])) {
-      $query = base64_decode($_POST['query']);
+    if(isset($_POST['query']) && isset($_POST['fetchMode'])) {
+
+      $query = base64_decode( $_POST['query'] );
 
       $res = $bridge->query($query, (int)$_POST['fetchMode']);
 
-      if (is_array($res['result']) || is_bool($res['result'])) {
-        $result = serialize(array(
+      if(is_array($res['result']) || is_bool($res['result'])) {
+        $result  =  serialize(array(
           'res'           => $res['result'],
           'fetchedFields' => @$res['fetchedFields'],
-          'insertId'      => $bridge->getLink()->getLastInsertId(),
-          'affectedRows'  => $bridge->getLink()->getAffectedRows(),
+          'insertId'      => mysql_insert_id($bridge->getLink()),
+          'affectedRows'  => mysql_affected_rows($bridge->getLink()),
         ));
 
         echo base64_encode($result);
+
       } else {
         echo base64_encode($res['message']);
       }
@@ -1174,21 +1161,21 @@ class M1_Bridge_Action_Query
 
 class M1_Config_Adapter
 {
-  var $Host                = 'localhost';
+  var $Host                = "localhost";
   var $Port                = null;//"3306";
-  var $Username            = 'root';
-  var $Password            = '';
-  var $Dbname              = '';
-  var $TblPrefix           = '';
+  var $Username            = "root";
+  var $Password            = "";
+  var $Dbname              = "";
+  var $TblPrefix           = "";
 
-  var $cartType                 = 'Oscommerce22ms2';
-  var $imagesDir                = '';
-  var $categoriesImagesDir      = '';
-  var $productsImagesDir        = '';
-  var $manufacturersImagesDir   = '';
-  var $categoriesImagesDirs     = '';
-  var $productsImagesDirs       = '';
-  var $manufacturersImagesDirs  = '';
+  var $cartType               = "Oscommerce22ms2";
+  var $imagesDir              = "";
+  var $categoriesImagesDir    = "";
+  var $productsImagesDir      = "";
+  var $manufacturersImagesDir = "";
+  var $categoriesImagesDirs   = "";
+  var $productsImagesDirs     = "";
+  var $manufacturersImagesDirs= "";
 
   var $languages   = array();
   var $cartVars    = array();
@@ -1199,56 +1186,59 @@ class M1_Config_Adapter
       return null;
     }
 
-    $cartType = $this->_detectCartType();
-    $className = "M1_Config_Adapter_" . $cartType;
-
+    $cartType = M1_Config_Adapter::detectCartType();
+    $className =  "M1_Config_Adapter_" . $cartType;
     $obj = new $className();
     $obj->cartType = $cartType;
-
     return $obj;
   }
 
-  function _detectCartType()
+  function detectCartType()
   {
     // Zencart137
-    if (file_exists(M1_STORE_BASE_DIR . "includes" . DIRECTORY_SEPARATOR . "configure.php")
-      && file_exists(M1_STORE_BASE_DIR . "ipn_main_handler.php")
-    ) {
+    if(file_exists(M1_STORE_BASE_DIR
+              . "includes" . DIRECTORY_SEPARATOR
+              . "configure.php")
+       && file_exists(M1_STORE_BASE_DIR
+                . "ipn_main_handler.php") ) {
       return "Zencart137";
     }
 
     //osCommerce
-    /* is if not tomatocart */
-    if (file_exists(M1_STORE_BASE_DIR . "includes" . DIRECTORY_SEPARATOR . "configure.php")
-      && !file_exists(M1_STORE_BASE_DIR . "includes" . DIRECTORY_SEPARATOR . "toc_constants.php")
-    ) {
+    if(file_exists(M1_STORE_BASE_DIR
+                . "includes" . DIRECTORY_SEPARATOR
+                . "configure.php")
+        && !file_exists(M1_STORE_BASE_DIR
+                . "includes" . DIRECTORY_SEPARATOR
+                . "toc_constants.php")/* is if not tomatocart */ ) {
+
       return "Oscommerce22ms2";
     }
 
-    if (file_exists(M1_STORE_BASE_DIR . "/includes/configure.php")) {
+    if(file_exists(M1_STORE_BASE_DIR . "/includes/configure.php")) {
       return "Gambio";
     }
 
     //JooCart
-    if (file_exists(M1_STORE_BASE_DIR . '/components/com_opencart/opencart.php')) {
+    if(file_exists(M1_STORE_BASE_DIR . '/components/com_opencart/opencart.php')) {
       return 'JooCart';
     }
 
     //ACEShop
-    if (file_exists(M1_STORE_BASE_DIR . '/components/com_aceshop/aceshop.php')) {
+    if(file_exists(M1_STORE_BASE_DIR . '/components/com_aceshop/aceshop.php')) {
       return 'AceShop';
     }
 
     //Litecommerce
-    if ((file_exists(M1_STORE_BASE_DIR .'/etc/config.php'))
-      || (file_exists(M1_STORE_BASE_DIR .'/modules/lc_connector/litecommerce/etc/config.php'))
-    ) {
+    if ((file_exists(M1_STORE_BASE_DIR .'/etc/config.php')) ||
+      (file_exists(M1_STORE_BASE_DIR .'/modules/lc_connector/litecommerce/etc/config.php')) ) {
       return "Litecommerce";
     }
 
     //Prestashop11
     if (file_exists(M1_STORE_BASE_DIR . "config/config.inc.php")) {
-      if (file_exists(M1_STORE_BASE_DIR . "cache/class_index.php")) {
+      if (file_exists(M1_STORE_BASE_DIR . "cache/class_index.php"))
+      {
         return "Prestashop15";
       }
       return "Prestashop11";
@@ -1279,16 +1269,13 @@ class M1_Config_Adapter
     }
 
     //Cscart203 - 3
-    if (file_exists(M1_STORE_BASE_DIR . "config.local.php") || file_exists(M1_STORE_BASE_DIR . "partner.php")) {
+    if ( file_exists(M1_STORE_BASE_DIR . "config.local.php") || file_exists(M1_STORE_BASE_DIR . "partner.php") ) {
+      //return "Cscart203";
       return "Cscart203";
     }
 
     //Opencart14
-    if ((file_exists(M1_STORE_BASE_DIR . "system/startup.php")
-        || (file_exists(M1_STORE_BASE_DIR . "common.php"))
-        || (file_exists(M1_STORE_BASE_DIR . "library/locator.php"))
-      ) && file_exists(M1_STORE_BASE_DIR . "config.php")
-    ) {
+    if ( (file_exists(M1_STORE_BASE_DIR . "system/startup.php") || (file_exists(M1_STORE_BASE_DIR . "common.php") ) || (file_exists(M1_STORE_BASE_DIR . "library/locator.php"))) && file_exists(M1_STORE_BASE_DIR . "config.php") ) {
       return "Opencart14";
     }
 
@@ -1298,25 +1285,25 @@ class M1_Config_Adapter
     }
 
     //XCart
-    if (file_exists(M1_STORE_BASE_DIR . "config.php")) {
+    if(file_exists(M1_STORE_BASE_DIR . "config.php")) {
       return "XCart";
     }
 
     //LemonStand
-    if (file_exists(M1_STORE_BASE_DIR . "boot.php")) {
+    if(file_exists(M1_STORE_BASE_DIR . "boot.php")) {
       return "LemonStand";
     }
-
+    
     //Interspire
     if (file_exists(M1_STORE_BASE_DIR . "config/config.php")) {
       return "Interspire";
-    }
-
+    } 
+    
     //Squirrelcart242
     if (file_exists(M1_STORE_BASE_DIR . 'squirrelcart/config.php')) {
       return "Squirrelcart242";
     }
-
+    
     //Shopscript WebAsyst
     if (file_exists(M1_STORE_BASE_DIR . 'kernel/wbs.xml')) {
       return "WebAsyst";
@@ -1338,41 +1325,37 @@ class M1_Config_Adapter
     }
 
     //Summercart3
-    if (file_exists(M1_STORE_BASE_DIR . 'sclic.lic') && file_exists(M1_STORE_BASE_DIR . 'include/miphpf/Config.php')) {
+    if (file_exists(M1_STORE_BASE_DIR . 'sclic.lic') && file_exists(M1_STORE_BASE_DIR . 'include/miphpf/Config.php') ) {
       return "Summercart3";
     }
 
     //XtcommerceVeyton
-    if (file_exists(M1_STORE_BASE_DIR . 'conf/config.php')) {
+    if (file_exists(M1_STORE_BASE_DIR . 'conf/config.php') ) {
       return "XtcommerceVeyton";
     }
 
     //Ubercart
-    if (file_exists(M1_STORE_BASE_DIR . 'sites/default/settings.php' )) {
-      if (file_exists( M1_STORE_BASE_DIR . '/modules/ubercart/uc_store/includes/coder_review_uc3x.inc')) {
-        return "Ubercart3";
-      } elseif (file_exists(M1_STORE_BASE_DIR . 'sites/all/modules/commerce/includes/commerce.controller.inc')) {
-        return "DrupalCommerce";
-      }
-
+    if( file_exists( M1_STORE_BASE_DIR . 'sites/default/settings.php' ) ) {
+      if( file_exists( M1_STORE_BASE_DIR . '/modules/ubercart/uc_store/includes/coder_review_uc3x.inc' ) )
+         return "Ubercart3";
+      elseif ( file_exists(M1_STORE_BASE_DIR . 'sites/all/modules/commerce/includes/commerce.controller.inc') )
+          return "DrupalCommerce";
       return "Ubercart";
     }
 
     //Woocommerce
-    if (file_exists(M1_STORE_BASE_DIR . 'wp-config.php')
-      && file_exists(M1_STORE_BASE_DIR . 'wp-content/plugins/woocommerce/woocommerce.php')
-    ) {
+    if (file_exists(M1_STORE_BASE_DIR . 'wp-config.php') &&
+          file_exists(M1_STORE_BASE_DIR . 'wp-content/plugins/woocommerce/woocommerce.php')) {
       return 'Woocommerce';
     }
 
-    if (file_exists(dirname(M1_STORE_BASE_DIR) . '/wp-config.php')
-      && file_exists(M1_STORE_BASE_DIR . 'wp-content/plugins/woocommerce/woocommerce.php')
-    ) {
+    if (file_exists(dirname(M1_STORE_BASE_DIR) . '/wp-config.php') &&
+      file_exists(M1_STORE_BASE_DIR . 'wp-content/plugins/woocommerce/woocommerce.php')) {
       return 'Woocommerce';
     }
 
     //WPecommerce
-    if (file_exists(M1_STORE_BASE_DIR . 'wp-config.php')) {
+    if( file_exists( M1_STORE_BASE_DIR . 'wp-config.php' ) ) {
       return 'WPecommerce';
     }
 
@@ -1382,21 +1365,22 @@ class M1_Config_Adapter
     }
 
     //HHGMultistore
-    if (file_exists(M1_STORE_BASE_DIR . 'core/config/configure.php')) {
+    if( file_exists( M1_STORE_BASE_DIR . 'core/config/configure.php' ) ) {
       return 'Hhgmultistore';
     }
 
     //SunShop
-    if (file_exists(M1_STORE_BASE_DIR . "include" . DIRECTORY_SEPARATOR . "config.php")
-      || file_exists(M1_STORE_BASE_DIR . "include" . DIRECTORY_SEPARATOR . "db_mysql.php")
-    ) {
+    if( file_exists(M1_STORE_BASE_DIR . "include" . DIRECTORY_SEPARATOR . "config.php") || file_exists(M1_STORE_BASE_DIR . "include" . DIRECTORY_SEPARATOR . "db_mysql.php") ) {
       return "Sunshop4";
     }
 
     //Tomatocart
-    if (file_exists(M1_STORE_BASE_DIR . "includes" . DIRECTORY_SEPARATOR . "configure.php")
-      && file_exists(M1_STORE_BASE_DIR. "includes" . DIRECTORY_SEPARATOR . "toc_constants.php")
-    ) {
+    if(file_exists(M1_STORE_BASE_DIR
+                . "includes" . DIRECTORY_SEPARATOR
+                . "configure.php")
+            && file_exists(M1_STORE_BASE_DIR
+                . "includes" . DIRECTORY_SEPARATOR
+                . "toc_constants.php")) {
       return 'Tomatocart';
     }
 
@@ -1405,44 +1389,58 @@ class M1_Config_Adapter
 
   function getAdapterPath($cartType)
   {
-    return M1_STORE_BASE_DIR . M1_BRIDGE_DIRECTORY_NAME . DIRECTORY_SEPARATOR
-      . "app" . DIRECTORY_SEPARATOR
-      . "class" . DIRECTORY_SEPARATOR
-      . "config_adapter" . DIRECTORY_SEPARATOR . $cartType . ".php";
+    return M1_STORE_BASE_DIR .
+                   M1_BRIDGE_DIRECTORY_NAME . DIRECTORY_SEPARATOR .
+                   "app" . DIRECTORY_SEPARATOR .
+                   "class" . DIRECTORY_SEPARATOR .
+                   "config_adapter" . DIRECTORY_SEPARATOR . $cartType . ".php";
   }
 
   function setHostPort($source)
   {
     $source = trim($source);
 
-    if ($source == '') {
-      $this->Host = 'localhost';
+    if( $source == '' ) {
+      $this->Host = "localhost";
       return;
     }
 
     $conf = explode(":", $source);
+    if( isset($conf[0]) && isset($conf[1]) ) {
 
-    if (isset($conf[0]) && isset($conf[1])) {
       $this->Host = $conf[0];
-      $this->Port = $conf[1];
-    } elseif ($source[0] == '/') {
-      $this->Host = 'localhost';
-      $this->Port = $source;
+      $this->Port  = $conf[1];
+
+    } elseif( $source[0] == '/' ) {
+
+      $this->Host = "localhost";
+      $this->Port  = $source;
+
     } else {
+
       $this->Host = $source;
+
     }
   }
 
   function connect()
   {
-    if (function_exists('mysql_connect')) {
-      $link = new M1_Mysql($this);
-    } elseif (function_exists('mysqli_connect')) {
-      $link = new M1_Mysqli($this);
-    } elseif (extension_loaded('pdo_mysql')) {
-      $link = new M1_Pdo($this);
-    } else {
-      $link = false;
+    $triesCount = 10;
+    $link = null;
+
+    $host = $this->Host.($this->Port? ':'.$this->Port : '');
+    while (!$link) {
+      if (!$triesCount--) {
+        break;
+      }
+      $link = @mysql_connect($host, $this->Username, $this->Password);
+      if  (!$link) {
+        sleep(5);
+      }
+    }
+
+    if( $link ) {
+      mysql_select_db($this->Dbname, $link);
     }
 
     return $link;
@@ -1450,248 +1448,27 @@ class M1_Config_Adapter
 
   function getCartVersionFromDb($field, $tableName, $where)
   {
+    $_link = null;
     $version = '';
 
-    $link = $this->connect();
-    if (!$link) {
+    $_link = $this->connect();
+    if( !$_link ) {
       return '[ERROR] MySQL Query Error: Can not connect to DB';
     }
 
-    $result = $link->localQuery("
-      SELECT " . $field . " AS version
-      FROM " . $this->TblPrefix . $tableName . "
-      WHERE " . $where
-    );
+    $sql = "SELECT " . $field . " AS version FROM " . $this->TblPrefix . $tableName . " WHERE " . $where;
 
-    if (is_array($result) && isset($result[0]['version'])) {
-      $version = $result[0]['version'];
+    $query = mysql_query($sql, $_link);
+
+    if ( $query !== false ) {
+      $row = mysql_fetch_assoc($query);
+
+      $version = $row['version'];
     }
 
     return $version;
-  }
+  }  
 }
-
-/**
- * @package  api2cart
- * @author   Vasul Babiy (v.babyi@magneticone.com)
- * @license  Not public license
- * @link     https://www.api2cart.com
- */
-
-class M1_Mysqli
-{
-  var $config = null; // config adapter
-  var $result = array();
-  var $dataBaseHandle = null;
-
-  /**
-   * mysql constructor
-   *
-   * @param M1_Config_Adapter $config
-   * @return M1_Mysql
-   */
-  function M1_Mysqli($config)
-  {
-    $this->config = $config;
-  }
-
-  /**
-   * @return bool|null|resource
-   */
-  function getDataBaseHandle()
-  {
-    if ($this->dataBaseHandle) {
-      return $this->dataBaseHandle;
-    }
-
-    $this->dataBaseHandle = $this->connect();
-
-    if (!$this->dataBaseHandle) {
-      exit('[ERROR] MySQLi Query Error: Can not connect to DB');
-    }
-
-    return $this->dataBaseHandle;
-  }
-
-  /**
-   * @return bool|null|resource
-   */
-  function connect()
-  {
-    $triesCount = 10;
-    $link = null;
-    $host = $this->config->Host . ($this->config->Port ? ':' . $this->config->Port : '');
-    $password = stripslashes($this->config->Password);
-
-    while (!$link) {
-      if (!$triesCount--) {
-        break;
-      }
-
-      $link = @mysqli_connect($host, $this->config->Username, $password);
-      if (!$link) {
-        sleep(5);
-      }
-    }
-
-    if ($link) {
-      mysqli_select_db($link, $this->config->Dbname);
-    } else {
-      return false;
-    }
-
-    return $link;
-  }
-
-  /**
-   * @param $sql
-   *
-   * @return array|bool|mysqli_result
-   */
-  function localQuery($sql)
-  {
-    $result = array();
-    $dataBaseHandle = $this->getDataBaseHandle();
-
-    $sth = mysqli_query($dataBaseHandle, $sql);
-
-    if (is_bool($sth)) {
-      return $sth;
-    }
-
-    while (($row = mysqli_fetch_assoc($sth))) {
-      $result[] = $row;
-    }
-
-    return $result;
-  }
-
-  /**
-   * @param $sql
-   * @param $fetchType
-   *
-   * @return array
-   */
-  function query($sql, $fetchType)
-  {
-    $result = array(
-      'result'        => null,
-      'message'       => ''
-    );
-
-    $dataBaseHandle = $this->getDataBaseHandle();
-
-    if (!$dataBaseHandle) {
-      $result['message'] = '[ERROR] MySQLi Query Error: Can not connect to DB';
-      return $result;
-    }
-
-    if (isset($_GET['disable_checks'])) {
-      $this->localQuery('SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0');
-      $this->localQuery("SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO'");
-    }
-
-    if (isset($_REQUEST['set_names'])) {
-      @mysqli_query($dataBaseHandle, "SET NAMES " . @mysqli_real_escape_string($dataBaseHandle, $_REQUEST['set_names']));
-      @mysqli_query($dataBaseHandle, "SET CHARACTER SET " . @mysqli_real_escape_string($dataBaseHandle, $_REQUEST['set_names']));
-      @mysqli_query($dataBaseHandle, "SET CHARACTER_SET_CONNECTION=" . @mysqli_real_escape_string($dataBaseHandle, $_REQUEST['set_names']));
-    }
-
-    $fetchMode = MYSQLI_ASSOC;
-    switch ($fetchType) {
-      case 3:
-        $fetchMode = MYSQLI_BOTH;
-        break;
-      case 2:
-        $fetchMode = MYSQLI_NUM;
-        break;
-      case 1:
-        $fetchMode = MYSQLI_ASSOC;
-        break;
-      default:
-        break;
-    }
-
-    $res = mysqli_query($dataBaseHandle, $sql);
-
-    $triesCount = 10;
-    while (mysqli_errno($dataBaseHandle) == 2013) {
-      if (!$triesCount--) {
-        break;
-      }
-      // reconnect
-      $dataBaseHandle = $this->getDataBaseHandle();
-      if ($dataBaseHandle) {
-
-        if (isset($_REQUEST['set_names'])) {
-          @mysqli_query($dataBaseHandle, "SET NAMES " . @mysqli_real_escape_string($dataBaseHandle, $_REQUEST['set_names']));
-          @mysqli_query($dataBaseHandle, "SET CHARACTER SET " . @mysqli_real_escape_string($dataBaseHandle, $_REQUEST['set_names']));
-          @mysqli_query($dataBaseHandle, "SET CHARACTER_SET_CONNECTION=" . @mysqli_real_escape_string($dataBaseHandle, $_REQUEST['set_names']));
-        }
-
-        // execute query once again
-        $res = mysqli_query($dataBaseHandle, $sql);
-      }
-    }
-
-    if (($errno = mysqli_errno($dataBaseHandle)) != 0) {
-      $result['message'] = '[ERROR] MySQLi Query Error: ' . $errno . ', ' . mysqli_error($dataBaseHandle);
-      return $result;
-    }
-
-    $fetchedFields = array();
-    while ($field = mysqli_fetch_field($res)) {
-      $fetchedFields[] = $field;
-    }
-
-    $rows = array();
-    while ($row = mysqli_fetch_array($res, $fetchMode)) {
-      $rows[] = $row;
-    }
-
-    if (isset($_GET['disable_checks'])) {
-      $this->localQuery("SET SQL_MODE=IFNULL(@OLD_SQL_MODE,'')");
-      $this->localQuery("SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS,0)");
-    }
-
-    $result['result']        = $rows;
-    $result['fetchedFields'] = $fetchedFields;
-
-    mysqli_free_result($res);
-
-    return $result;
-  }
-
-  /**
-   * @return int
-   */
-  function getLastInsertId()
-  {
-    return mysqli_insert_id($this->dataBaseHandle);
-  }
-
-  /**
-   * @return int
-   */
-  function getAffectedRows()
-  {
-    return mysqli_affected_rows($this->dataBaseHandle);
-  }
-
-  /**
-   * @return void
-   */
-  function __destruct()
-  {
-    if ($this->dataBaseHandle) {
-      mysqli_close($this->dataBaseHandle);
-    }
-
-    $this->dataBaseHandle = null;
-  }
-
-}
-
 
 class M1_Config_Adapter_Cscart203 extends M1_Config_Adapter
 {
@@ -3208,428 +2985,13 @@ class M1_Config_Adapter_JooCart extends M1_Config_Adapter
 }
 
 
-/**
- * @package  api2cart
- * @author   Vasul Babiy (v.babyi@magneticone.com)
- * @license  Not public license
- * @link     https://www.api2cart.com
- */
-
-class M1_Pdo
-{
-  var $config = null; // config adapter
-  var $noResult = array('delete', 'update', 'move', 'truncate', 'insert', 'set', 'create', 'drop');
-  var $dataBaseHandle = null;
-
-  var $insertedId = 0;
-  var $affectedRows = 0;
-
-  /**
-   * pdo constructor
-   *
-   * @param M1_Config_Adapter $config configuration
-   * @return M1_Pdo
-   */
-  function M1_Pdo($config)
-  {
-    $this->config = $config;
-  }
-
-  /**
-   * @return bool|null|PDO
-   */
-  function getDataBaseHandle()
-  {
-    if ($this->dataBaseHandle) {
-      return $this->dataBaseHandle;
-    }
-
-    $this->dataBaseHandle = $this->connect();
-
-    if (!$this->dataBaseHandle) {
-      exit('[ERROR] MySQL Query Error: Can not connect to DB');
-    }
-
-    return $this->dataBaseHandle;
-  }
-
-  /**
-   * @return bool|PDO
-   */
-  function connect()
-  {
-    $triesCount = 3;
-    $host = $this->config->Host . ($this->config->Port ? ':' . $this->config->Port : '');
-    $password = stripslashes($this->config->Password);
-    $dbName = $this->config->Dbname;
-
-    while ($triesCount) {
-      try {
-        $link = new PDO("mysql:host=$host; dbname=$dbName", $this->config->Username, $password);
-        $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        return $link;
-
-      } catch (PDOException $e) {
-        $triesCount--;
-
-        // fix invalid port
-        $host = $this->config->Host;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * @param string $sql sql query
-   *
-   * @return array|bool
-   */
-  function localQuery($sql)
-  {
-    $result = array();
-    $dataBaseHandle = $this->getDataBaseHandle();
-
-    $sth = $dataBaseHandle->query($sql);
-
-    foreach ($this->noResult as $statement) {
-      if (!$sth || strpos(strtolower(trim($sql)), $statement) === 0) {
-        return true;
-      }
-    }
-
-    while (($row = $sth->fetch(PDO::FETCH_ASSOC)) != false) {
-      $result[] = $row;
-    }
-
-    return $result;
-  }
-
-  /**
-   * @param string $sql       sql query
-   * @param int    $fetchType fetch Type
-   *
-   * @return array
-   */
-  function query($sql, $fetchType)
-  {
-    $result = array(
-      'result'        => null,
-      'message'       => '',
-      'fetchedFields' => array()
-    );
-    $dataBaseHandle = $this->getDataBaseHandle();
-
-    if (isset($_GET['disable_checks'])) {
-      $dataBaseHandle->exec('SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0');
-      $dataBaseHandle->exec("SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO'");
-    }
-
-    if (isset($_REQUEST['set_names'])) {
-      $dataBaseHandle->exec("SET NAMES '" . ($_REQUEST['set_names']) . "'");
-      $dataBaseHandle->exec("SET CHARACTER SET '" . ($_REQUEST['set_names']) . "'");
-      $dataBaseHandle->exec("SET CHARACTER_SET_CONNECTION = '" . ($_REQUEST['set_names']) . "'");
-    }
-
-    switch ($fetchType) {
-      case 3:
-        $dataBaseHandle->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_BOTH);
-        break;
-      case 2:
-        $dataBaseHandle->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_NUM);
-        break;
-      case 1:
-      default:
-        $dataBaseHandle->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        break;
-    }
-
-    try {
-      $res = $dataBaseHandle->query($sql);
-      $this->affectedRows = $res->rowCount();
-      $this->insertedId = $dataBaseHandle->lastInsertId();
-    } catch (PDOException $e) {
-      $result['message'] = '[ERROR] Mysql Query Error: ' . $e->getCode() . ', ' . $e->getMessage();
-      return $result;
-    }
-
-    foreach ($this->noResult as $statement) {
-      if (!$res || strpos(strtolower(trim($sql)), $statement) === 0) {
-        $result['result'] = true;
-        return $result;
-      }
-    }
-
-    $rows = array();
-    while (($row = $res->fetch()) !== false) {
-      $rows[] = $row;
-    }
-
-    if (isset($_GET['disable_checks'])) {
-      $this->localQuery("SET SQL_MODE=IFNULL(@OLD_SQL_MODE,'')");
-      $this->localQuery("SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS,0)");
-    }
-
-    $result['result'] = $rows;
-
-    unset($res);
-    return $result;
-  }
-
-  /**
-   * @return string|int
-   */
-  function getLastInsertId()
-  {
-    return $this->insertedId;
-  }
-
-  /**
-   * @return int
-   */
-  function getAffectedRows()
-  {
-    return $this->affectedRows;
-  }
-
-  /**
-   * @return  void
-   */
-  function __destruct()
-  {
-    $this->dataBaseHandle = null;
-  }
-}
-
-/**
- * @package  api2cart
- * @author   Vasul Babiy (v.babyi@magneticone.com)
- * @license  Not public license
- * @link     https://www.api2cart.com
- */
-
-class M1_Mysql
-{
-  var $config = null; // config adapter
-  var $result = array();
-  var $dataBaseHandle = null;
-
-  /**
-   * mysql constructor
-   *
-   * @param M1_Config_Adapter $config
-   * @return M1_Mysql
-   */
-  function M1_Mysql($config)
-  {
-    $this->config = $config;
-  }
-
-  /**
-   * @return bool|null|resource
-   */
-  function getDataBaseHandle()
-  {
-    if ($this->dataBaseHandle) {
-      return $this->dataBaseHandle;
-    }
-
-    $this->dataBaseHandle = $this->connect();
-
-    if (!$this->dataBaseHandle) {
-      exit('[ERROR] MySQL Query Error: Can not connect to DB');
-    }
-
-    return $this->dataBaseHandle;
-  }
-
-  /**
-   * @return bool|null|resource
-   */
-  function connect()
-  {
-    $triesCount = 10;
-    $link = null;
-    $host = $this->config->Host . ($this->config->Port ? ':' . $this->config->Port : '');
-    $password = stripslashes($this->config->Password);
-
-    while (!$link) {
-      if (!$triesCount--) {
-        break;
-      }
-
-      $link = @mysql_connect($host, $this->config->Username, $password);
-      if (!$link) {
-        sleep(5);
-      }
-    }
-
-    if ($link) {
-      mysql_select_db($this->config->Dbname, $link);
-    } else {
-      return false;
-    }
-
-    return $link;
-  }
-
-  /**
-   * @param string $sql sql query
-   *
-   * @return array
-   */
-  function localQuery($sql)
-  {
-    $result = array();
-    $dataBaseHandle = $this->getDataBaseHandle();
-
-    $sth = mysql_query($sql, $dataBaseHandle);
-
-    if (is_bool($sth)) {
-      return $sth;
-    }
-
-    while (($row = mysql_fetch_assoc($sth)) != false) {
-      $result[] = $row;
-    }
-
-    return $result;
-  }
-
-  /**
-   * @param string $sql       sql query
-   * @param int    $fetchType fetch Type
-   *
-   * @return array
-   */
-  function query($sql, $fetchType)
-  {
-    $result = array(
-      'result'  => null,
-      'message' => '',
-    );
-    $dataBaseHandle = $this->getDataBaseHandle();
-
-    if (!$dataBaseHandle) {
-      $result['message'] = '[ERROR] MySQL Query Error: Can not connect to DB';
-      return $result;
-    }
-
-    if (isset($_GET['disable_checks'])) {
-      $this->localQuery('SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0');
-      $this->localQuery("SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO'");
-    }
-
-    if (isset($_REQUEST['set_names'])) {
-      @mysql_query("SET NAMES " . @mysql_real_escape_string($_REQUEST['set_names']), $dataBaseHandle);
-      @mysql_query("SET CHARACTER SET " . @mysql_real_escape_string($_REQUEST['set_names']), $dataBaseHandle);
-      @mysql_query("SET CHARACTER_SET_CONNECTION=" . @mysql_real_escape_string($_REQUEST['set_names']), $dataBaseHandle);
-    }
-
-    $fetchMode = MYSQL_ASSOC;
-    switch ($fetchType) {
-      case 3:
-        $fetchMode = MYSQL_BOTH;
-        break;
-      case 2:
-        $fetchMode = MYSQL_NUM;
-        break;
-      case 1:
-        $fetchMode = MYSQL_ASSOC;
-        break;
-      default:
-        break;
-    }
-
-    $res = mysql_query($sql, $dataBaseHandle);
-
-    $triesCount = 10;
-    while (mysql_errno($dataBaseHandle) == 2013) {
-      if (!$triesCount--) {
-        break;
-      }
-      // reconnect
-      $dataBaseHandle = $this->getDataBaseHandle();
-      if ($dataBaseHandle) {
-
-        if (isset($_REQUEST['set_names'])) {
-          @mysql_query("SET NAMES " . @mysql_real_escape_string($_REQUEST['set_names']), $dataBaseHandle);
-          @mysql_query("SET CHARACTER SET " . @mysql_real_escape_string($_REQUEST['set_names']), $dataBaseHandle);
-          @mysql_query("SET CHARACTER_SET_CONNECTION=" . @mysql_real_escape_string($_REQUEST['set_names']), $dataBaseHandle);
-        }
-
-        // execute query once again
-        $res = mysql_query($sql, $dataBaseHandle);
-      }
-    }
-
-    if (($errno = mysql_errno($dataBaseHandle)) != 0) {
-      $result['message'] = '[ERROR] Mysql Query Error: ' . $errno . ', ' . mysql_error($dataBaseHandle);
-      return $result;
-    }
-
-    if (!is_resource($res)) {
-      $result['result'] = $res;
-      return $result;
-    }
-
-    $fetchedFields = array();
-    while (($field = mysql_fetch_field($res)) !== false) {
-      $fetchedFields[] = $field;
-    }
-
-    $rows = array();
-    while (($row = mysql_fetch_array($res, $fetchMode)) !== false) {
-      $rows[] = $row;
-    }
-
-    if (isset($_GET['disable_checks'])) {
-      $this->localQuery("SET SQL_MODE=IFNULL(@OLD_SQL_MODE,'')");
-      $this->localQuery("SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS,0)");
-    }
-
-    $result['result']        = $rows;
-    $result['fetchedFields'] = $fetchedFields;
-
-    mysql_free_result($res);
-    return $result;
-  }
-
-  /**
-   * @return int
-   */
-  function getLastInsertId()
-  {
-    return mysql_insert_id($this->dataBaseHandle);
-  }
-
-  /**
-   * @return int
-   */
-  function getAffectedRows()
-  {
-    return mysql_affected_rows($this->dataBaseHandle);
-  }
-
-  /**
-   * @return void
-   */
-  function __destruct()
-  {
-    if ($this->dataBaseHandle) {
-      mysql_close($this->dataBaseHandle);
-    }
-
-    $this->dataBaseHandle = null;
-  }
-}
-
-
 
 class M1_Bridge
 {
-  var $_link      = null; //mysql connection link
-  var $config     = null; //config adapter
+  var $_link = null; //mysql connection link
+  var $_res = null; // mysql query result
+  var $_tblPrefix = ""; // table prefix
+  var $config = null; // config adapter
 
   /**
    * Bridge constructor
@@ -3641,14 +3003,14 @@ class M1_Bridge
   {
     $this->config = $config;
 
-    if ($this->getAction() != "savefile" && $this->getAction() != "update") {
+    if($this->getAction() != "savefile" && $this->getAction() != "update" ) {
       $this->_link = $this->config->connect();
     }
   }
 
   function getTablesPrefix()
   {
-    return $this->config->TblPrefix;
+    return $this->_tblPrefix;
   }
 
   function getLink()
@@ -3658,44 +3020,133 @@ class M1_Bridge
 
   function query($sql, $fetchMode)
   {
-    return $this->_link->query($sql, $fetchMode);
+    $result = array(
+      'result'  => null,
+      'message' => '',
+    );
+
+    if (!$this->_link) {
+      $result['message'] = '[ERROR] MySQL Query Error: Can not connect to DB';
+      return $result;
+    }
+
+
+    if (isset($_GET['disable_checks'])) {
+      mysql_query('SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0', $this->_link);
+      mysql_query("SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO'", $this->_link);
+    }
+
+    if(isset($_REQUEST['set_names'])) {
+      @mysql_query("SET NAMES " . @mysql_real_escape_string($_REQUEST['set_names']), $this->_link);
+      @mysql_query("SET CHARACTER SET " . @mysql_real_escape_string($_REQUEST['set_names']), $this->_link );
+      @mysql_query("SET CHARACTER_SET_CONNECTION=" . @mysql_real_escape_string($_REQUEST['set_names']), $this->_link );
+    }
+
+    $fetch_mode = MYSQL_ASSOC;
+    switch ($fetchMode) {
+      case 3:
+        $fetch_mode = MYSQL_BOTH;
+      break;
+
+      case 2:
+        $fetch_mode = MYSQL_NUM;
+      break;
+
+      case 1:
+        $fetch_mode = MYSQL_ASSOC;
+      default:
+      break;
+    }
+
+    $this->_res = mysql_query($sql, $this->_link);
+
+    $triesCount = 10;
+    while (mysql_errno($this->_link) == 2013) {
+      if (!$triesCount--) {
+        break;
+      }
+      // reconnect
+      $this->_link = $this->config->connect();
+      if ($this->_link) {
+
+         if(isset($_REQUEST['set_names'])) {
+           @mysql_query("SET NAMES " . @mysql_real_escape_string($_REQUEST['set_names']), $this->_link);
+           @mysql_query("SET CHARACTER SET " . @mysql_real_escape_string($_REQUEST['set_names']), $this->_link );
+           @mysql_query("SET CHARACTER_SET_CONNECTION=" . @mysql_real_escape_string($_REQUEST['set_names']), $this->_link );
+         }
+
+         // execute query once again
+         $this->_res = mysql_query($sql, $this->_link);
+      }
+    }
+
+    if( ($errno = mysql_errno($this->_link)) != 0 ) {
+      $result['message'] = '[ERROR] Mysql Query Error: '.$errno.', ' . mysql_error($this->_link);
+      return $result;
+    }
+
+    if(!is_resource($this->_res)) {
+      $result['result'] = $this->_res;
+      return $result;
+    }
+
+    $fetchedFields = array();
+    while ( ($field = mysql_fetch_field($this->_res)) !== false ) {
+      $fetchedFields[] = $field;
+    }
+
+    $rows = array();
+    while( ($row = mysql_fetch_array($this->_res, $fetch_mode)) !== false) {
+      $rows[] = $row;
+    }
+
+    mysql_free_result($this->_res);
+
+    if (isset($_GET['disable_checks'])) {
+      mysql_query("SET SQL_MODE=IFNULL(@OLD_SQL_MODE,'')", $this->_link);
+      mysql_query("SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS,0)", $this->_link);
+    }
+
+    $result['result']        = $rows;
+    $result['fetchedFields'] = $fetchedFields;
+
+    return $result;
   }
 
   function getAction()
   {
-    if (isset($_GET['action'])) {
-      return str_replace('.', '', $_GET['action']);
+    if(isset($_GET['action'])) {
+      return str_replace(".", "", $_GET['action']);
+    } else {
+      return "";
     }
-
-    return '';
   }
 
   function run()
   {
     $action = $this->getAction();
 
-    if ($action != "update") {
+    if ( $action != "update") {
       $this->_selfTest();
     }
 
-    if ($action == "checkbridge") {
+    if($action == "checkbridge") {
       echo "BRIDGE_OK";
       return;
     }
 
-    if ($action == "update") {
+    if ( $action == "update") {
       $this->_checkPossibilityUpdate();
     }
 
-    $className = "M1_Bridge_Action_" . ucfirst($action);
-    if (!class_exists($className)) {
-      echo 'ACTION_DO_NOT EXIST' . PHP_EOL;
+    $class_name =  "M1_Bridge_Action_" . ucfirst($action);
+    if (!class_exists($class_name)) {
+      echo "ACTION_DO_NOT EXIST" . PHP_EOL;
       die;
     }
-
-    $actionObj = new $className();
-    @$actionObj->cartType = @$this->config->cartType;
-    $actionObj->perform($this);
+    $action_obj = new $class_name();
+    @$action_obj->cartType = @$this->config->cartType;
+    $action_obj->perform($this);
     $this->_destroy();
   }
 
@@ -3707,16 +3158,16 @@ class M1_Bridge
 
     $dh = @opendir($dir);
 
-    if ($dh === false) {
+    if($dh === false) {
       return false;
     }
 
-    while (($entry = readdir($dh)) !== false) {
-      if ($entry == "." || $entry == ".." || !@is_dir($dir . DIRECTORY_SEPARATOR . $entry)) {
+    while( ($entry = readdir($dh)) !== false ) {
+      if($entry == "." || $entry == ".." || !@is_dir($dir . DIRECTORY_SEPARATOR . $entry)) {
         continue;
       }
 
-      if (!$this->isWritable($dir . DIRECTORY_SEPARATOR . $entry)) {
+      if( !$this->isWritable($dir . DIRECTORY_SEPARATOR . $entry) ) {
         return false;
       }
     }
@@ -3730,13 +3181,15 @@ class M1_Bridge
 
   function _destroy()
   {
-    $this->_link = null;
+    if($this->getAction() != "savefile") {
+      mysql_close($this->_link);
+    }
   }
 
   function _checkPossibilityUpdate()
   {
     if (!is_writable(M1_STORE_BASE_DIR . "/" . M1_BRIDGE_DIRECTORY_NAME . "/")) {
-      die("ERROR_TRIED_TO_PERMISSION" . M1_STORE_BASE_DIR . "/" . M1_BRIDGE_DIRECTORY_NAME . "/");
+      die("ERROR_TRIED_TO_PERMISSION" . M1_STORE_BASE_DIR . "/". M1_BRIDGE_DIRECTORY_NAME . "/");
     }
 
     if (!is_writable(M1_STORE_BASE_DIR . "/". M1_BRIDGE_DIRECTORY_NAME . "/bridge.php")) {
@@ -3746,32 +3199,19 @@ class M1_Bridge
 
   function _selfTest()
   {
-    if (!isset($_GET['ver']) || $_GET['ver'] != M1_BRIDGE_VERSION) {
+    if( !isset($_GET['ver']) || $_GET['ver'] != M1_BRIDGE_VERSION ) {
       die ('ERROR_BRIDGE_VERSION_NOT_SUPPORTED');
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-define("M1_TOKEN", "sadsadsadsadsadsa");
+    if (isset($_GET['token']) && $_GET['token'] == M1_TOKEN) {
       // good :)
     } else {
       die('ERROR_INVALID_TOKEN');
     }
 
-    if ((!isset($_GET['storetype']) || $_GET['storetype'] == 'target') && $this->getAction() == 'checkbridge') {
+    if( (!isset($_GET['storetype']) || $_GET['storetype'] == 'target') && $this->getAction() == 'checkbridge' ) {
 
-      if (trim($this->config->imagesDir) != "") {
+      if( trim($this->config->imagesDir) != "" ) {
         if (!file_exists(M1_STORE_BASE_DIR . $this->config->imagesDir) && is_writable(M1_STORE_BASE_DIR)) {
           if (!@mkdir(M1_STORE_BASE_DIR . $this->config->imagesDir, 0777, true)) {
             die('ERROR_TRIED_TO_CREATE_IMAGE_DIR' . M1_STORE_BASE_DIR . $this->config->imagesDir);
@@ -3783,7 +3223,7 @@ define("M1_TOKEN", "sadsadsadsadsadsa");
         }
       }
 
-      if (trim($this->config->categoriesImagesDir) != "") {
+      if( trim($this->config->categoriesImagesDir) != "" ) {
         if (!file_exists(M1_STORE_BASE_DIR . $this->config->categoriesImagesDir) && is_writable(M1_STORE_BASE_DIR)) {
           if (!@mkdir(M1_STORE_BASE_DIR . $this->config->categoriesImagesDir, 0777, true)) {
             die('ERROR_TRIED_TO_CREATE_IMAGE_DIR' . M1_STORE_BASE_DIR . $this->config->categoriesImagesDir);
@@ -3795,7 +3235,7 @@ define("M1_TOKEN", "sadsadsadsadsadsa");
         }
       }
 
-      if (trim($this->config->productsImagesDir) != "") {
+      if( trim($this->config->productsImagesDir) != "" ) {
         if (!file_exists(M1_STORE_BASE_DIR . $this->config->productsImagesDir) && is_writable(M1_STORE_BASE_DIR)) {
           if (!@mkdir(M1_STORE_BASE_DIR . $this->config->productsImagesDir, 0777, true)) {
             die('ERROR_TRIED_TO_CREATE_IMAGE_DIR' . M1_STORE_BASE_DIR . $this->config->productsImagesDir);
@@ -3807,7 +3247,7 @@ define("M1_TOKEN", "sadsadsadsadsadsa");
         }
       }
 
-      if (trim($this->config->manufacturersImagesDir) != "") {
+      if( trim($this->config->manufacturersImagesDir) != "" ) {
         if (!file_exists(M1_STORE_BASE_DIR . $this->config->manufacturersImagesDir) && is_writable(M1_STORE_BASE_DIR)) {
           if (!@mkdir(M1_STORE_BASE_DIR . $this->config->manufacturersImagesDir, 0777, true)) {
             die('ERROR_TRIED_TO_CREATE_IMAGE_DIR' . M1_STORE_BASE_DIR . $this->config->manufacturersImagesDir);
@@ -3829,26 +3269,13 @@ define('M1_BRIDGE_VERSION', '21');
 define('M1_BRIDGE_DIRECTORY_NAME', basename(getcwd()));
 
 ini_set('display_errors', 1);
-if (substr(phpversion(), 0, 1) == 5) {
+if(substr(phpversion(), 0, 1) == 5) {
   error_reporting(E_ALL & ~E_STRICT);
 } else {
   error_reporting(E_ALL);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-define("M1_TOKEN", "sadsadsadsadsadsa");
+require_once 'config.php';
 
 function stripslashes_array($array) {
   return is_array($array) ? array_map('stripslashes_array', $array) : stripslashes($array);
@@ -3861,14 +3288,15 @@ function getPHPExecutable() {
     // we need this for XAMPP (Windows)
     if (isset($_SERVER["WINDIR"]) && strstr($path, 'php.exe') && file_exists($path) && is_file($path)) {
       return $path;
-    } else {
+    }
+    else {
       $phpExecutable = $path . DIRECTORY_SEPARATOR . "php" . (isset($_SERVER["WINDIR"]) ? ".exe" : "");
       if (file_exists($phpExecutable) && is_file($phpExecutable)) {
         return $phpExecutable;
       }
     }
   }
-  return false;
+  return FALSE;
 }
 
 if (!isset($_SERVER))
@@ -3881,7 +3309,8 @@ if (!isset($_SERVER))
    $_REQUEST  = array_merge($_GET, $_POST, $_COOKIE);
 }
 
-if (get_magic_quotes_gpc()) {
+if ( get_magic_quotes_gpc() ) {
+
   $_COOKIE  = stripslashes_array($_COOKIE);
   $_FILES   = stripslashes_array($_FILES);
   $_GET     = stripslashes_array($_GET);
@@ -3899,10 +3328,10 @@ if (isset($_SERVER['SCRIPT_FILENAME'])) {
   //Windows IIS
   define("M1_STORE_BASE_DIR", preg_replace('/[^\/\\\]*[\/\\\][^\/\\\]*$/', '', realpath(dirname(__FILE__) . "/../")));
 }
-$adapter = new M1_Config_Adapter();
-$bridge = new M1_Bridge($adapter->create());
 
-if (!$bridge->getLink()) {
+$bridge = new M1_Bridge(M1_Config_Adapter::create());
+
+if( !$bridge->getLink() ) {
   die ('ERROR_BRIDGE_CANT_CONNECT_DB');
 }
 

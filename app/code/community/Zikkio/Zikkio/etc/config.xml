@@ -1,12 +1,66 @@
 <?xml version="1.0"?>
+
 <config>
+    
     <modules>
         <Zikkio_Zikkio>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </Zikkio_Zikkio>
     </modules>
-    <global>        
+    
+    <adminhtml>
+        <acl>
+            <resources>
+                <all>
+                    <title>Allow Everything</title>
+                </all>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <zikkio_settings>
+                                            <title>Zikkio Settings</title>
+                                        </zikkio_settings>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+        
+    <global>    
+        
+        <resources>
+            <zikkio_setup>
+                <setup>
+                    <module>Zikkio_Zikkio</module>
+                    <class>Zikkio_Zikkio_Model_Resource_Setup</class>
+                </setup>
+
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </zikkio_setup>
+        </resources>
+            
         <events>
+            <!--
+            <catalog_product_edit_action>
+                <observers>
+                    <zikkio_zikkio_clonemsrp>
+                        <type>singleton</type>
+                        <class>Zikkio_Zikkio_Model_Observer</class>
+                        <method>cloneMSRP</method>
+                    </zikkio_zikkio_clonemsrp>
+                </observers>
+            </catalog_product_edit_action>
+            -->
+            
             <admin_system_config_section_save_after>
                 <observers>
                     <zikkio_zikkio_save_api_zikkio>
@@ -17,16 +71,18 @@
                 </observers>
             </admin_system_config_section_save_after>
         </events>
+        
         <models>
             <zikkio>
                 <class>Zikkio_Zikkio_Model</class>
             </zikkio>
         </models>
 		
-		 <helpers>
+        <helpers>
             <zikkio>
                 <class>Zikkio_Zikkio_Helper</class>
             </zikkio>
         </helpers>
+        
     </global>
 </config> 

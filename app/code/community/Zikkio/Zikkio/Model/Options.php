@@ -1,9 +1,7 @@
 <?php
 
-class Zikkio_Zikkio_Helper_Data extends Mage_Core_Helper_Abstract {
-
+class Zikkio_Zikkio_Model_Options {
     protected function _isAllowed() {
         return true;
     }
-
 }

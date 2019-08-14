@@ -4,6 +4,9 @@
         <Zikkio_Zikkio>
             <active>true</active>
             <codePool>community</codePool>
+            <depends>
+                <Mage_Eav/>
+            </depends>
         </Zikkio_Zikkio>
     </modules>
 </config>

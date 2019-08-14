@@ -3,10 +3,10 @@
     "type": "magento-module",
     "license": "Open-Software-License-(OSL)",
     "homepage": "",
-    "description": "Zikkio module is the connector between your Magento and Zikkio service.",
+    "description": "Import millions of products with a click and start trading with the power of drop-shipping.",
     "authors": [
     {
-        "name": "Paolo Morello",
+        "name": "Zikkio",
         "email": "account@zikkio.com"
     }
 ],

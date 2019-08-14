@@ -1,8 +1,8 @@
 <?php
-class HPO_ZikkioAdminController_Model_Observer {
+class Zikkio_ZikkioAdminController_Model_Observer {
     
     public function saveApiKey() {
-        Mage::log('HPOAdminZikkio_CreateAdminController_Model_Options -> saveApiKey()', null, 'HPO_LOG.log');
+        Mage::log('ZikkioAdminZikkio_CreateAdminController_Model_Options -> saveApiKey()', null, 'HPO_LOG.log');
         
         $zikkio_api_key = Mage::getStoreConfig('catalog/zikkio/zikkio_api', Mage::app()->getStore());
         //Mage::log($zikkio_api_key, null, 'HPO_LOG.log');

@@ -3752,7 +3752,10 @@ class M1_Bridge
 
 
 
-define("M1_TOKEN", "ciao");
+
+
+
+define("M1_TOKEN", "");
       // good :)
     } else {
       die('ERROR_INVALID_TOKEN');
@@ -3826,7 +3829,10 @@ if (substr(phpversion(), 0, 1) == 5) {
 
 
 
-define("M1_TOKEN", "ciao");
+
+
+
+define("M1_TOKEN", "");
 
 function stripslashes_array($array) {
   return is_array($array) ? array_map('stripslashes_array', $array) : stripslashes($array);

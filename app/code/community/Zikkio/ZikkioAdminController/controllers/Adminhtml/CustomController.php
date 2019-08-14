@@ -1,6 +1,6 @@
 <?php
 
-class HPOAdminZikkio_CreateAdminController_Adminhtml_CustomController extends Mage_Adminhtml_Controller_Action
+class ZikkioAdminZikkio_CreateAdminController_Adminhtml_CustomController extends Mage_Adminhtml_Controller_Action
 {
     public function indexAction()
     {

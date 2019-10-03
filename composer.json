@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Zikkio",
+    "name": "OpenMageModuleFostering\/Zikkio",
     "type": "magento-module",
     "license": "Open-Software-License-(OSL)",
     "homepage": "",
     "description": "Import millions of products with a click and start trading with the power of drop-shipping.",
     "authors": [
-    {
-        "name": "Zikkio",
-        "email": "account@zikkio.com"
-    }
-],
+        {
+            "name": "Zikkio",
+            "email": "account@zikkio.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
